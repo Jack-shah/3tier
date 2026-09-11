@@ -1,0 +1,33 @@
+pipeline {
+    agent {
+        docker {
+            image 'awajid3/node18agent:v1'
+            args '-v /var/run/docker.sock:/var/run/docker.sock --user root'
+        }
+    }
+
+    stages {
+        stage('Environment Check') {
+            steps {
+                // Fixed the space syntax for node -v
+                sh 'node -v'
+                sh 'npm -v'
+                sh 'docker version'
+            }
+        }
+        stage('Checkout Code') {
+            steps {
+                 sh 'rm -rf * .* 2>/dev/null || true'
+                checkout changelog: false, poll: false, scm: scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/iam-veeramalla/three-tier-architecture-demo.git']])
+            }
+        }
+        stage('Build & Install') {
+            steps {
+                    sh '''
+                    cd catalogue
+                    npm install
+                    '''
+                }
+            }
+        }
+    }// Added missing closing bracket
