@@ -1,0 +1,12 @@
+FROM node:18-alpine
+
+# Install Docker CLI, Git, Curl, and Bash for pipeline scripts
+RUN apk add --no-cache \
+    docker-cli \
+    git \
+    curl \
+    bash
+
+# Set up the workspace directory
+WORKDIR /home/jenkins
+
